@@ -5,10 +5,7 @@ const { getAccessToken, getSpotifyUserData } = require('../utils/spotifyHandler'
 const { insertAccessTokenQuery } = require('../utils/dbQuery');
 const { generateJWTAccessToken, generateJWTRefreshToken } = require('../utils/jwt');
 
-//TODO : Change to accept req params (user_id)
 const authorize = (req, res) => {
-  //const origin = req.get('Origin') || req.get('Referer');
-  const origin = "http://192.168.0.74:5173"
 
   if (origin && origin.startsWith(process.env.FRONTEND_URL)) {
     const state = 'authorize';
