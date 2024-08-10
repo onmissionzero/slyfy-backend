@@ -7,6 +7,7 @@ const { generateJWTAccessToken, generateJWTRefreshToken } = require('../utils/jw
 
 const authorize = (req, res) => {
 
+  const origin = req.get('Origin') || req.get('Referer');
   if (origin && origin.startsWith(process.env.FRONTEND_URL)) {
     const state = 'authorize';
     const scope = 'user-read-playback-state user-read-email';

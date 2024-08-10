@@ -35,6 +35,8 @@ app.post('/logout', (req, res) => {
     res.status(200).send('Logged out successfully');
 });
 
-app.listen(process.env.PORT,'0.0.0.0', () => {
+const port = process.env.PORT || 3000;
+
+app.listen(port,'0.0.0.0', () => {
     console.log(`listening on port ${process.env.PORT}`);
 });
