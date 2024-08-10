@@ -28,6 +28,7 @@ const verifyJWT = async (req, res, next) => {
 
                         res.cookie('jwt_access_token', newAccessToken, { httpOnly: true, sameSite: 'lax', secure: true, maxAge: 60 * 60 * 1000 });
                         res.cookie('jwt_refresh_token', newRefreshTokenRefreshToken, { httpOnly: true, sameSite: 'lax', secure: true, maxAge: 3 * 24 * 60 * 60 * 1000 });
+                        res.header('Access-Control-Allow-Credentials', 'true');
                         req.user = decodedRefresh.id;
                         console.log('JWT Token refreshed for ' + req.user);
                         next();
