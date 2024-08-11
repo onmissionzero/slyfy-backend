@@ -65,6 +65,7 @@ const callback = async (req, res) => {
     res.cookie('jwt_access_token', JWTAccessToken, { httpOnly: true, sameSite: 'None', secure: true, maxAge: 60 * 60 * 1000 });
     res.cookie('jwt_refresh_token', JWTRefreshToken, { httpOnly: true, sameSite: 'None', secure: true, maxAge: 3 * 24 * 60 * 60 * 1000 });
     res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Origin', process.env.FRONTEND_URL);
     res.redirect(`${process.env.FRONTEND_URL}/callback?pfp_url=${pfp_url}&display_name=${display_name}`);
   } catch (err) {
     console.error(err);
