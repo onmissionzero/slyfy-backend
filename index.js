@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('./middlewares/logger');
 const lyrics_route = require("./routes/lyrics");
 const oauth_route = require("./routes/oauth");
+const user_route = require("./routes/user");
 
 const app = express();  
 
@@ -22,18 +23,12 @@ app.use(cookieParser());
 app.use(logger);
 
 app.use(lyrics_route);
-
 app.use(oauth_route);
+app.use(user_route);
 
 app.get('/', (req, res) => {
-    res.json("Backend is working.");
+    res.json({message: "Backend is working."});
 })
-
-app.post('/logout', (req, res) => {
-    res.clearCookie('jwt_access_token', { httpOnly: true, path: '/' });
-    res.clearCookie('jwt_refresh_token', { httpOnly: true, path: '/' });
-    res.status(200).send('Logged out successfully');
-});
 
 const port = process.env.PORT || 3000;
 

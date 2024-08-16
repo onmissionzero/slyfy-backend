@@ -4,6 +4,7 @@ const pool = require('../utils/db');
 const { getAccessToken, getSpotifyUserData } = require('../utils/spotifyHandler');
 const { insertAccessTokenQuery } = require('../utils/dbQuery');
 const { generateJWTAccessToken, generateJWTRefreshToken } = require('../utils/jwt');
+const { getDomainFromUrl, cookifyRes } = require('../utils/cookie');
 
 const authorize = (req, res) => {
 
@@ -35,7 +36,7 @@ const callback = async (req, res) => {
 
     if (error != null || code==null ) {
       console.log("ERROR: " + error);
-      res.status(401).redirect(`${process.env.FRONTEND_URL}/callback?error=Authorization Error. Please Try Again`);
+      res.redirect(`${process.env.FRONTEND_URL}/error`);
       return;
     }
 
@@ -62,14 +63,22 @@ const callback = async (req, res) => {
 
     const JWTAccessToken = generateJWTAccessToken({id: user_id});
     const JWTRefreshToken = generateJWTRefreshToken({id: user_id});
-    res.cookie('jwt_access_token', JWTAccessToken, { httpOnly: true, sameSite: 'None', secure: true, maxAge: 60 * 60 * 1000 });
-    res.cookie('jwt_refresh_token', JWTRefreshToken, { httpOnly: true, sameSite: 'None', secure: true, maxAge: 3 * 24 * 60 * 60 * 1000 });
+    const domain = getDomainFromUrl(process.env.FRONTEND_URL);
+    if (!domain) {
+      throw new Error('Invalid domain');
+    }
+    cookifyRes(res, JWTAccessToken, JWTRefreshToken, domain);
     res.header('Access-Control-Allow-Credentials', 'true');
     res.header('Access-Control-Allow-Origin', process.env.FRONTEND_URL);
-    res.redirect(`${process.env.FRONTEND_URL}/callback?pfp_url=${pfp_url}&display_name=${display_name}`);
+
+    res.redirect(`${process.env.FRONTEND_URL}`);
+    /* apparently, cookies are sent subsequently to frontend (here -> /callback(backend) -> frontend)
+    (res comes from backend as of now
+    need to fix it in the future)
+    */
   } catch (err) {
     console.error(err);
-    res.status(401).redirect(`${process.env.FRONTEND_URL}/callback?error=Authorization Error. Please Try Again`);
+    res.redirect(`${process.env.FRONTEND_URL}/error`);
   }
 }
 
