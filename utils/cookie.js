@@ -14,7 +14,6 @@ const cookifyRes = (res, accessToken, refreshToken, domain) => {
       sameSite: 'None',
       secure: true,
       maxAge: 60 * 60 * 1000, // 1 Hour: 60 * 60 * 1000
-      domain: domain
   });
 
   res.cookie('jwt_refresh_token', refreshToken, {
@@ -22,7 +21,6 @@ const cookifyRes = (res, accessToken, refreshToken, domain) => {
       sameSite: 'None',
       secure: true,
       maxAge: 3 * 24 * 60 * 60 * 1000, // 3 Days: 3 * 24 * 60 * 60 * 1000
-      domain: domain
   });
 };
 
