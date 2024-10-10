@@ -13,7 +13,7 @@ const app = express();
 const corsOptions = {
     origin: process.env.FRONTEND_URL,
     methods: ['GET'],
-    allowedHeaders: ['Content-Type'],
+    allowedHeaders: ['Authorization, X-Refresh-Token, Content-Type'],
     credentials: true
 };
 

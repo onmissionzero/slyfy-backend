@@ -51,7 +51,7 @@ const getLRCLyrics = async (artistNames, trackName, albumName, duration) => {
     }
 
     const data = await response.json();
-    return data;a
+    return data;
   } catch (error) {
     console.log(error);
   }

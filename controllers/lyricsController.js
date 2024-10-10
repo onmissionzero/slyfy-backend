@@ -5,8 +5,8 @@ const { retrieveAccessTokenQuery } = require('../utils/dbQuery');
 const { getLyrics, getLRCLyrics, cleanTrackName } = require('../utils/lyricsHandler');
 
 const lyrics = async (req, res) => {
-  const origin = req.get('Origin') || req.get('Referer');
-  //if (origin && origin.startsWith(process.env.FRONTEND_URL)) {
+/*   const origin = req.get('Origin') || req.get('Referer');
+  if (origin && origin.startsWith(process.env.FRONTEND_URL)) { */
     const id = req.user;
     try {
       const values = [id];
@@ -51,14 +51,14 @@ const lyrics = async (req, res) => {
       console.error('Error processing request:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
-  //} else {
- //   res.status(403).send('Forbidden');
- // }
+  /* } else {
+    res.status(403).send('Forbidden');
+  } */
 };
   
 const currentlyPlaying = async (req, res) => {
-  const origin = req.get('Origin') || req.get('Referer');
-  //if (origin && origin.startsWith(process.env.FRONTEND_URL)) {
+/*   const origin = req.get('Origin') || req.get('Referer');
+  if (origin && origin.startsWith(process.env.FRONTEND_URL)) { */
     const id = req.user;
     try {
       const values = [id];
@@ -110,9 +110,9 @@ const currentlyPlaying = async (req, res) => {
       console.error('Error processing request:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
-  //} else {
- //   res.status(403).send('Forbidden');
- // }
+/*   } else {
+    res.status(403).send('Forbidden');
+  } */
 }
   module.exports = {
     lyrics,

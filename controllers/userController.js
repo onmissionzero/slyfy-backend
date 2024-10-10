@@ -4,8 +4,8 @@ const { getSpotifyUserData, refreshToken } = require('../utils/spotifyHandler');
 const { retrieveAccessTokenQuery } = require('../utils/dbQuery');
 
 const user = async (req, res) => {
-    const origin = req.get('Origin') || req.get('Referer');
-    if (origin && origin.startsWith(process.env.FRONTEND_URL)) {
+/*     const origin = req.get('Origin') || req.get('Referer');
+    if (origin && origin.startsWith(process.env.FRONTEND_URL)) { */
         const id = req.user;
         try {
             const values = [id];
@@ -18,9 +18,9 @@ const user = async (req, res) => {
             let { access_token, created_at, expires_at } = query_result.rows[0];
             const now = new Date();
             if( now > expires_at ) {
-                console.log("Token expired for " + id + " " + now);
+                console.log("Spotify Token expired for " + id + " " + now);
                 access_token = await refreshToken(id);
-                console.log("Token refreshed for " + id + " " + now);
+                console.log("Spotify Token refreshed for " + id + " " + now);
             }
 
             const userData = await getSpotifyUserData(access_token);
@@ -39,23 +39,11 @@ const user = async (req, res) => {
             console.error('Error processing request: ', error);
             res.status(500).json({ error: 'Error authenticating user.' });
         }
-    } else {
+/*     }  else {
         res.status(403).send('Forbidden');
-    }
-};
-
-const logout = (req, res) => {
-    const origin = req.get('Origin') || req.get('Referer');
-    if (origin && origin.startsWith(process.env.FRONTEND_URL)) {
-        res.clearCookie('jwt_access_token', { httpOnly: true, path: '/' });
-        res.clearCookie('jwt_refresh_token', { httpOnly: true, path: '/' });
-        res.status(200).send('Logged out successfully');
-    } else {
-        res.status(403).send('Forbidden');
-    }
+    } */
 };
 
 module.exports = {
-    user,
-    logout
+    user
 }
