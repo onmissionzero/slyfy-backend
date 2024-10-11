@@ -15,7 +15,7 @@ const handleRefreshToken = async (req, res) => {
             const newRefreshToken = generateJWTRefreshToken({ id: decodedRefresh.id });
 
             console.log('Frontend JWT Token refreshed for user ID:', decodedRefresh.id);
-            res.json({
+            res.status(201).json({
                 accessToken: newAccessToken,
                 refreshToken: newRefreshToken
             });
