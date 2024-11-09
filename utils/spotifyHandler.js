@@ -93,7 +93,7 @@ async function getSpotifyUserData(access_token) {
   }
 };
 
-async function getCurrentTrackPlaying(user_id, access_token) {
+async function getCurrentTrackPlaying(access_token) {
   try {
     let trackResponse = await fetch("https://api.spotify.com/v1/me/player/currently-playing", {
       method: 'GET',
@@ -112,10 +112,89 @@ async function getCurrentTrackPlaying(user_id, access_token) {
   }
 }
 
+async function getTopTracks(access_token) {
+  const timeRanges = ['long_term', 'medium_term', 'short_term'];
+  
+  const fetchTracks = async (time_range) => {
+    try {
+      let response = await fetch(`https://api.spotify.com/v1/me/top/tracks?time_range=${time_range}&limit=10&offset=0`, {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + access_token
+        }
+      });
+      if (response.status !== 200) {
+        throw new Error(`Error fetching ${time_range} tracks: ${response.statusText}`);
+      }
+      const data = await response.json();
+      return data.items.map(item => ({
+        name: item.name,
+        artists: item.artists.map(artist => artist.name),
+        image: item.album.images[0]?.url
+      }));
+    } catch (error) {
+      return { error: error.message };
+    }
+  };
+
+  try {
+    const results = await Promise.all(timeRanges.map(range => fetchTracks(range)));
+    
+    return {
+      long_term: results[0],
+      medium_term: results[1],
+      short_term: results[2]
+    };
+  } catch (error) {
+    return { error: "Error fetching top tracks" };
+  }
+}
+
+async function getTopArtists(access_token) {
+  const timeRanges = ['long_term', 'medium_term', 'short_term'];
+  
+  const fetchArtists = async (time_range) => {
+    try {
+      let response = await fetch(`https://api.spotify.com/v1/me/top/artists?time_range=${time_range}&limit=10&offset=0`, {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + access_token
+        }
+      });
+      if (response.status !== 200) {
+        throw new Error(`Error fetching ${time_range} artists: ${response.statusText}`);
+      }
+      const data = await response.json();
+      return data.items.map(item => ({
+        name: item.name,
+        genres: item.genres,
+        image: item.images[0]?.url
+      }));
+    } catch (error) {
+      return { error: error.message };
+    }
+  };
+
+  try {
+    const results = await Promise.all(timeRanges.map(range => fetchArtists(range)));
+    
+    return {
+      long_term: results[0],
+      medium_term: results[1],
+      short_term: results[2]
+    };
+  } catch (error) {
+    return { error: "Error fetching top artists" };
+  }
+}
+
+
 module.exports = {
   getAccessToken,
   refreshToken,
   exchangeRefreshTokenForAccessToken,
   getSpotifyUserData,
-  getCurrentTrackPlaying
+  getCurrentTrackPlaying,
+  getTopTracks,
+  getTopArtists
 }

@@ -14,7 +14,7 @@ const lyrics = async (req, res) => {
       
       if(query_result.rows[0] === undefined)
       {
-        res.json({error: "Your ID is invalid. Please logout and try logging in again."});
+        res.status(401).json({error: "Your ID is invalid. Please logout and try logging in again."});
         return;
       }
       let { access_token, created_at, expires_at } = query_result.rows[0];
@@ -26,10 +26,10 @@ const lyrics = async (req, res) => {
         console.log("Spotify Access Token refreshed for " + id + " " + now);
       }
 
-      const jsonResponse = await getCurrentTrackPlaying(id, access_token);
+      const jsonResponse = await getCurrentTrackPlaying(access_token);  
       if('error' in jsonResponse)
       {
-        res.json(jsonResponse);
+        res.status(500).json(jsonResponse);
         return;
       }
 
@@ -66,7 +66,7 @@ const currentlyPlaying = async (req, res) => {
       
       if(query_result.rows[0] === undefined)
       {
-        res.json({error: "Your ID is invalid. Please logout and try logging in again."});
+        res.status(401).json({error: "Your ID is invalid. Please logout and try logging in again."});
         return;
       }
       let { access_token, created_at, expires_at } = query_result.rows[0];
@@ -78,10 +78,13 @@ const currentlyPlaying = async (req, res) => {
         console.log("Token refreshed for " + id + " " + now);
       }
 
-      const jsonResponse = await getCurrentTrackPlaying(id, access_token);
-      if('error' in jsonResponse)
-      {
-        res.json(jsonResponse);
+      const jsonResponse = await getCurrentTrackPlaying(access_token);
+      if (jsonResponse.error) {
+        if (jsonResponse.error === "No song is being played at the moment") {
+          res.status(200).json(jsonResponse);
+        } else {
+          res.status(500).json(jsonResponse);
+        }
         return;
       }
 

@@ -9,7 +9,7 @@ const authorize = (req, res) => {
 /*   const origin = req.get('Origin') || req.get('Referer');
   if (origin && origin.startsWith(process.env.FRONTEND_URL)) { */
     const state = req.query.isMobile === 'true' ? 'authorize_mobile' : 'authorize'; // Ensure isMobile is a string
-    const scope = 'user-read-playback-state user-read-email';
+    const scope = 'user-read-playback-state user-read-email user-top-read';
 
     res.redirect('https://accounts.spotify.com/authorize?' +
       querystring.stringify({
@@ -35,15 +35,21 @@ const callback = async (req, res) => {
       return res.redirect(`${process.env.FRONTEND_URL}/error`);
     }
 
-    const jsonData = await getAccessToken(code);
-    const { access_token, refresh_token } = jsonData;
+    const jsonData = await getAccessToken(code); //Exchange auth code for access token
+    const { access_token, token_type, scope, expires_in, refresh_token } = jsonData;
 
     // Get user data
     const userData = await getSpotifyUserData(access_token);
-    const user_id = userData.id;
-
-    const JWTAccessToken = generateJWTAccessToken({ id: user_id });
-    const JWTRefreshToken = generateJWTRefreshToken({ id: user_id });
+    const { id: user_id, display_name, images } = userData;
+    const pfp_url = images[0]?.url  || 'https://fakeimg.pl/64x64/000000/ffffff?text=+';
+    const scopes = `{"${scope.split(' ').join('","')}"}`;
+    const created_at = new Date();
+    const expires_at = new Date(created_at.getTime() + (expires_in * 1000));
+    const values = [user_id, access_token, token_type, scopes, refresh_token, created_at, expires_at];
+    const result = await pool.query(insertAccessTokenQuery, values); //store in db
+    
+    const JWTAccessToken = generateJWTAccessToken({id: user_id});
+    const JWTRefreshToken = generateJWTRefreshToken({id: user_id});
 
     if (state === 'authorize_mobile') {
       // Redirect to a custom URL scheme for the mobile app
