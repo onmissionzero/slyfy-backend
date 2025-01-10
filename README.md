@@ -22,6 +22,13 @@ Refer documentation here.\
 Create an app in Spotify (Register as developer first duh).\
 [https://developer.spotify.com/dashboard/create](https://developer.spotify.com/dashboard/create)
 
+
+tl;dr: The redirect URI specified in the app settings must be your server URL that handles the authentication response from Spotify (in this case, /callback).\
+Cited from the docs:
+```
+"In Redirect URIs enter one or more addresses that you want to allowlist with Spotify. This URI enables the Spotify authentication service to automatically invoke your app every time the user logs in (e.g. http://localhost:8080)"
+```
+
 Build the project: (Replace the env variables with yours)
 ```
 npm install
