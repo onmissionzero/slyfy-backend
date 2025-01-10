@@ -22,7 +22,7 @@ Read the document for creating an app in Spotify.\
 Create an app in Spotify (Register as developer first duh).\
 [https://developer.spotify.com/dashboard/create](https://developer.spotify.com/dashboard/create)
 
-Build the project: (Replace the variables with yours)
+Build the project: (Replace the env variables with yours)
 ```
 npm install
 cp example.env .env
