@@ -16,7 +16,7 @@ Enjoy synchronized lyrics displayed in real-time as you listen to your favorite 
 
 ## Setup
 
-Read the document for creating an app in Spotify.\
+Refer documentation here.\
 [https://developer.spotify.com/documentation/web-api/concepts/apps](https://developer.spotify.com/documentation/web-api/concepts/apps)
 
 Create an app in Spotify (Register as developer first duh).\
